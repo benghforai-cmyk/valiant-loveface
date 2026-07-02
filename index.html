@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/valiant-loveface/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Title and SEO Meta Tags -->
+    <title>Valiant Board | Votre Liste de Tâches Premium</title>
+    <meta name="description" content="Gérez vos tâches, suivez votre progression quotidienne, créez des catégories personnalisées et organisez des sous-tâches dans un espace de productivité premium en mode sombre." />
+    
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS (loaded via Vite) -->
+    <script type="module" crossorigin src="/valiant-loveface/assets/index-C-yloDXJ.js"></script>
+    <link rel="stylesheet" crossorigin href="/valiant-loveface/assets/index-A7_Zvw3g.css">
+  </head>
+  <body>
+    <!-- Main Glassmorphic Container -->
+    <div class="app-container">
+      
+      <!-- Top Header Navigation -->
+      <header class="app-header" role="banner">
+        <div class="logo-area">
+          <span class="logo-icon">✨</span>
+          <div class="logo-text">
+            <h1>Valiant Board</h1>
+            <p class="subtitle">Espace de Productivité</p>
+          </div>
+        </div>
+
+        <!-- Real-time search bar -->
+        <div class="search-container">
+          <label for="search-input" class="sr-only">Rechercher des tâches</label>
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Rechercher des tâches ou descriptions..." aria-label="Rechercher des tâches" />
+        </div>
+
+        <!-- Dynamic Toolbar Actions -->
+        <div class="toolbar-actions">
+          <button id="theme-toggle" class="btn-icon" aria-label="Changer le thème (sombre/clair)" title="Changer de thème">
+            <span class="theme-icon">🌓</span>
+          </button>
+          
+          <button id="export-btn" class="btn btn-secondary" aria-label="Exporter les tâches au format JSON" title="Exporter en JSON">
+            <span>📤 Exporter</span>
+          </button>
+          
+          <button id="import-btn" class="btn btn-secondary" aria-label="Importer des tâches depuis un fichier JSON" title="Importer depuis JSON">
+            <span>📥 Importer</span>
+          </button>
+          <!-- Hidden file input for import -->
+          <input type="file" id="import-file-input" accept=".json" style="display: none;" />
+        </div>
+      </header>
+
+      <!-- Main Layout Dashboard -->
+      <main class="dashboard-layout" role="main">
+        
+        <!-- Sidebar Panel: Statistics & Filters -->
+        <aside class="sidebar-panel">
+          
+          <!-- Section 1: Dashboard Stats Widget -->
+          <section class="widget glass-card stats-widget" aria-labelledby="stats-heading">
+            <h2 id="stats-heading" class="widget-title">Analyses</h2>
+            
+            <div class="stats-overview">
+              <div class="progress-ring-container">
+                <svg class="progress-ring" width="100" height="100">
+                  <circle class="progress-ring-bg" stroke="var(--border-color)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
+                  <circle id="progress-ring-fill" class="progress-ring-fill" stroke="var(--accent-color)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
+                </svg>
+                <div class="progress-ring-text">
+                  <span id="completion-percentage">0%</span>
+                  <span class="ring-subtext">Fait</span>
+                </div>
+              </div>
+              
+              <div class="stats-numbers">
+                <div class="stat-row">
+                  <span class="stat-dot total"></span>
+                  <span class="stat-label">Tâches actives :</span>
+                  <span id="stat-active" class="stat-val">0</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-dot completed"></span>
+                  <span class="stat-label">Complétées :</span>
+                  <span id="stat-completed" class="stat-val">0</span>
+                </div>
+                <div class="stat-row text-danger">
+                  <span class="stat-dot overdue"></span>
+                  <span class="stat-label">En retard :</span>
+                  <span id="stat-overdue" class="stat-val">0</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 2: Advanced Filters -->
+          <section class="widget glass-card filters-widget" aria-labelledby="filters-heading">
+            <h2 id="filters-heading" class="widget-title">Filtres & Tri</h2>
+            
+            <div class="filter-group">
+              <label for="filter-status">Statut</label>
+              <select id="filter-status">
+                <option value="all">Toutes les tâches</option>
+                <option value="active">Actives</option>
+                <option value="completed">Complétées</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="filter-priority">Priorité</label>
+              <select id="filter-priority">
+                <option value="all">Toutes les priorités</option>
+                <option value="high">🔴 Priorité haute</option>
+                <option value="medium">🟡 Priorité moyenne</option>
+                <option value="low">🟢 Priorité basse</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="filter-category">Catégorie</label>
+              <select id="filter-category">
+                <option value="all">Toutes les catégories</option>
+                <!-- Categories will be dynamically populated here -->
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="sort-by">Trier par</label>
+              <select id="sort-by">
+                <option value="dueDate-asc">📅 Date : les plus proches</option>
+                <option value="dueDate-desc">📅 Date : les plus éloignées</option>
+                <option value="priority-desc">⚠️ Priorité : haute à basse</option>
+                <option value="createdAt-desc">🆕 Date de création : les plus récentes</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- Section 3: Category Customization Manager -->
+          <section class="widget glass-card category-manager-widget" aria-labelledby="cat-heading">
+            <h2 id="cat-heading" class="widget-title">Catégories</h2>
+            
+            <!-- Dynamic list of categories with delete options -->
+            <ul id="categories-list" class="categories-list" role="list">
+              <!-- Dynamically populated -->
+            </ul>
+
+            <!-- Add new category form -->
+            <form id="new-category-form" class="new-category-form">
+              <div class="input-row">
+                <input type="text" id="new-cat-name" placeholder="Nom de la catégorie..." required aria-label="Nom de la nouvelle catégorie" />
+                <div class="color-picker-wrapper">
+                  <input type="color" id="new-cat-color" value="#6c5ce7" title="Choisir une couleur" aria-label="Couleur de la catégorie" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm" aria-label="Créer la catégorie">+</button>
+              </div>
+            </form>
+          </section>
+          
+        </aside>
+
+        <!-- Right Task Board Area -->
+        <section class="board-panel" aria-labelledby="board-heading">
+          <h2 id="board-heading" class="sr-only">Tableau des tâches</h2>
+
+          <!-- Inline Quick Add Task Form -->
+          <form id="add-task-form" class="add-task-form glass-card">
+            <div class="form-row-main">
+              <input type="text" id="task-title-input" placeholder="Créer une nouvelle tâche..." required aria-label="Titre de la tâche" />
+              <button type="submit" class="btn btn-primary" aria-label="Créer la tâche">
+                <span>➕ Ajouter</span>
+              </button>
+            </div>
+            
+            <!-- Expandable Options (Grows smoothly on focus) -->
+            <div class="form-row-details">
+              <div class="form-field">
+                <label for="task-category-select">Catégorie</label>
+                <select id="task-category-select">
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+              
+              <div class="form-field">
+                <label for="task-priority-select">Priorité</label>
+                <select id="task-priority-select">
+                  <option value="low">🟢 Basse</option>
+                  <option value="medium" selected>🟡 Moyenne</option>
+                  <option value="high">🔴 Haute</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="task-duedate-input">Date d'échéance</label>
+                <input type="date" id="task-duedate-input" />
+              </div>
+            </div>
+
+            <!-- Optional details description -->
+            <div class="form-row-description">
+              <textarea id="task-description-input" placeholder="Ajouter une description/notes... (optionnel)" rows="1" aria-label="Description de la tâche"></textarea>
+            </div>
+          </form>
+
+          <!-- Board Tasks Column -->
+          <div class="tasks-container">
+            <div class="tasks-column">
+              <div class="column-header">
+                <h3>Tableau des tâches</h3>
+                <span id="tasks-count-badge" class="count-badge">0</span>
+              </div>
+              
+              <!-- Task Card Grid / List -->
+              <div id="todo-cards-list" class="todo-cards-list" role="list">
+                <!-- Dynamically populated task card components -->
+              </div>
+              
+              <!-- Empty State Placeholder -->
+              <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-icon">🌈</div>
+                <h3>Aucune tâche ne correspond à vos filtres</h3>
+                <p>Essayez de réinitialiser les filtres ci-dessus ou créez une nouvelle tâche pour commencer.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Task Detail & Edit Modal Dialog -->
+    <!-- MANDATORY: Using closedby="any" to allow click-outside-backdrop light dismiss -->
+    <dialog id="task-detail-modal" class="glass-card detail-modal" closedby="any" aria-labelledby="modal-title">
+      <div class="modal-wrapper">
+        <header class="modal-header">
+          <div class="modal-title-area">
+            <span id="modal-category-badge" class="category-badge">Catégorie</span>
+            <input type="text" id="modal-title-input" class="modal-title-field" value="" aria-label="Modifier le titre de la tâche" />
+          </div>
+          <button type="button" class="btn-close" id="modal-close-btn" aria-label="Fermer le dialogue" title="Fermer">×</button>
+        </header>
+
+        <div class="modal-body">
+          
+          <!-- Row 1: Parameters (Priority & Due Date) -->
+          <div class="modal-grid-fields">
+            <div class="modal-field">
+              <label for="modal-priority-select">Priorité</label>
+              <select id="modal-priority-select">
+                <option value="low">🟢 Basse</option>
+                <option value="medium">🟡 Moyenne</option>
+                <option value="high">🔴 Haute</option>
+              </select>
+            </div>
+
+            <div class="modal-field">
+              <label for="modal-category-select">Catégorie</label>
+              <select id="modal-category-select">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div class="modal-field">
+              <label for="modal-duedate-input">Date d'échéance</label>
+              <input type="date" id="modal-duedate-input" />
+            </div>
+          </div>
+
+          <!-- Row 2: Description -->
+          <div class="modal-field description-field">
+            <label for="modal-description-input">Description / Notes</label>
+            <textarea id="modal-description-input" placeholder="Décrire les détails de cette tâche..." rows="3"></textarea>
+          </div>
+
+          <!-- Row 3: Subtasks Checklist Workspace -->
+          <div class="modal-field subtasks-field">
+            <label>Sous-tâches</label>
+            
+            <!-- Subtask progress bar -->
+            <div class="subtask-progress-bar-wrapper">
+              <div class="subtask-progress-bar-fill" id="modal-subtask-progress" style="width: 0%;"></div>
+            </div>
+            
+            <!-- Existing Subtasks List -->
+            <ul id="modal-subtasks-list" class="modal-subtasks-list" role="list">
+              <!-- Dynamically populated checklist -->
+            </ul>
+
+            <!-- Create new subtask inline -->
+            <form id="modal-new-subtask-form" class="modal-new-subtask-form">
+              <input type="text" id="modal-new-subtask-title" placeholder="Ajouter une sous-tâche..." required aria-label="Titre de la nouvelle sous-tâche" />
+              <button type="submit" class="btn btn-secondary btn-sm" aria-label="Ajouter la sous-tâche">+</button>
+            </form>
+          </div>
+
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-delete-btn" aria-label="Supprimer la tâche">🗑️ Supprimer</button>
+          <button type="button" class="btn btn-primary" id="modal-save-btn" aria-label="Enregistrer les modifications">Enregistrer & Fermer</button>
+        </footer>
+      </div>
+    </dialog>
+
+    <!-- Main entry JS -->
+  </body>
+</html>
